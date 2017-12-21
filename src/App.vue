@@ -215,16 +215,15 @@ export default {
         },
         messageEncoded () {
             if (this.message !== '') {
-                return bigInt(this.hexEncode(this.message), 16);
+                return bigInt(this.hexEncode(this.message.trim()), 16);
             }
             return '';
         },
         messageEncrypted () {
             if (this.messageEncoded !== '' && this.A_receiver !== '' && this.r) {
                 try {
-                    var messageEncoded = bigInt(this.hexEncode(this.message), 16);
-                    return bigInt(this.A_receiver).modPow(this.r, this.p)
-                            .multiply(messageEncoded).mod(this.p);
+                    return bigInt(this.A_receiver.trim()).modPow(this.r, this.p)
+                            .multiply(this.messageEncoded).mod(this.p);
                 } catch (error) {
                     // nothing
                 }
@@ -234,8 +233,8 @@ export default {
         messageDecrypted () {
             if (this.messageToDecrypt !== '' && this.R_sender !== '' && this.a) {
                 try {
-                    var c = bigInt(this.messageToDecrypt);
-                    return bigInt(this.R_sender)
+                    var c = bigInt(this.messageToDecrypt.trim());
+                    return bigInt(this.R_sender.trim())
                             .modPow(this.p.minus(1).minus(this.a), this.p)
                             .multiply(c).mod(this.p);
                 } catch (error) {
