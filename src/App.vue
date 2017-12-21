@@ -253,7 +253,7 @@ export default {
             if (this.messageDecrypted === '-') {
                 return '-';
             } else {
-                this.hexDecode(this.messageDecrypted.toString(16));
+                return this.hexDecode(this.messageDecrypted.toString(16));
             }
         }
     },
