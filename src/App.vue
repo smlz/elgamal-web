@@ -2,12 +2,6 @@
   <div id="app">
     <h1>Elgamal Calculator</h1>
     <h2>Fixe Grundparameter</h2>
-    <!--label for="group">Group</label>
-    <select name="group" id="group" v-model="selectedGroup">
-      <option v-for="option in groups" v-bind:key="option.id" v-bind:value="option.id">
-        {{option.id + 1}}. p: {{option.bits}}-bit-prime, g: {{option.g}}
-      </option>
-    </select-->
     <p>
     Gruppengrösse ({{this.groups[this.selectedGroup].bits}}-bit):
     <code class="bignum">p = {{p.toString()}}</code>
