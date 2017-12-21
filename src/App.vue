@@ -82,6 +82,7 @@ import bigInt from 'big-integer';
 
 export default {
     name: 'app',
+
     data () {
         return {
             groups: [
@@ -153,6 +154,7 @@ export default {
             R_sender: '',
         };
     },
+
     methods: {
         genRand () {
             return bigInt.randBetween(this.p.divide(10), this.p);
@@ -180,10 +182,18 @@ export default {
             }
             return result;
         },
-
     },
 
     computed: {
+        p () {
+            return this.groups[this.selectedGroup].p;
+        },
+        g () {
+            return this.groups[this.selectedGroup].g;
+        },
+        bits () {
+            return this.groups[this.selectedGroup].bits;
+        },
         A () {
             if (this.a) {
                 return bigInt(this.g).modPow(this.a, this.p);
@@ -197,15 +207,6 @@ export default {
             } else {
                 return false;
             }
-        },
-        p () {
-            return this.groups[this.selectedGroup].p;
-        },
-        g () {
-            return this.groups[this.selectedGroup].g;
-        },
-        bits () {
-            return this.groups[this.selectedGroup].bits;
         },
         messageEncoded () {
             if (this.message !== '') {
@@ -238,6 +239,7 @@ export default {
             return '-';
         },
     },
+
     watch: {
         a () {
             localStorage.setItem('privateKey', this.a.toString());
