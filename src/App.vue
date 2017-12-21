@@ -60,7 +60,7 @@
         <code class="bignum pub">R = {{R.toString()}}</code>
         </template>
     </p>
-    Verschlüsselte Mitteilung (c = A<sup>r</sup> * m (mod p)):
+    Verschlüsselte Mitteilung (c = A<sup>r</sup> · m (mod p)):
     <code class="bignum">
         c = {{messageEncrypted.toString()}}<br>
     </code>
@@ -73,7 +73,7 @@
     Verschlüsselte Mitteilung:<br>
     <code>c = <input type="text" v-model="messageToDecrypt" :size="Math.floor(bits/3.322)"></code>
     <br><br>
-    Entschlüsselte Mitteilung als Zahl (m = R<sub>Sender</sub><sup>p - 1 - a</sup> * c (mod p)):
+    Entschlüsselte Mitteilung als Zahl (m = R<sub>Sender</sub><sup>p - 1 - a</sup> · c (mod p)):
     <code class="bignum">m = {{messageDecrypted.toString()}}</code>
     <br>
     Entschlüsselte Mitteilung:
