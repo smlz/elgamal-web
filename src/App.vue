@@ -71,7 +71,7 @@
     <code class="bignum">m = {{messageDecrypted.toString()}}</code>
     <br>
     Entschlüsselte Mitteilung:
-    <code class="bignum">{{messageDecrypted === '-' ? '-' : hexDecode(messageDecrypted.toString(16))}}</code>
+    <code class="bignum">{{messageDecoded}}</code>
     </template>
     </template>
   </div>
@@ -238,6 +238,13 @@ export default {
             }
             return '-';
         },
+        messageDecoded () {
+            if (this.messageDecrypted === '-') {
+                return '-';
+            } else {
+                this.hexDecode(this.messageDecrypted.toString(16));
+            }
+        }
     },
 
     watch: {
