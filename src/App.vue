@@ -3,75 +3,86 @@
     <h1>Elgamal Calculator</h1>
     <h2>Fixe Grundparameter</h2>
     <p>
-    Gruppengrösse ({{this.groups[this.selectedGroup].bits}}-bit):
-    <code class="bignum">p = {{p.toString()}}</code>
-    <br>
-    Generator: <code>g = {{g}}</code>
+      Gruppengrösse ({{this.groups[this.selectedGroup].bits}}-bit):
+      <code class="bignum">p = {{p.toString()}}</code>
+      <br>
+      Generator: <code>g = {{g}}</code>
     </p>
 
     <h2>Schlüsselpaar generieren</h2>
     <button @click="genKeyPair()">Neuer Privater Schlüssel generieren</button>
     <br>
     <p v-if="a !== false">
-    Privater Schlüssel (a), generierte Zufallszahl: <a @click="showPrivA = !showPrivA" href="javascript://">{{showPrivA? 'verstecken': 'anzeigen'}}</a>
-    <code class="bignum priv">a = <template v-if="showPrivA">{{a.toString()}}</template><template v-else><i>GEHEIM</i></template></code>
-    <br>
-    Öffentlicher Schlüssel (A = g<sup>a</sup> (mod p)), mit dem privaten Schlüssel berechnet:
-    <code class="bignum pub">A = {{A.toString()}}</code>
+      Privater Schlüssel (a), generierte Zufallszahl:
+      <a @click="showPrivA = !showPrivA" href="javascript://">{{showPrivA? 'verstecken': 'anzeigen'}}</a>
+      <code class="bignum priv">a =
+        <template v-if="showPrivA">{{a.toString()}}</template>
+        <template v-else><i>GEHEIM</i></template>
+      </code>
+      <br>
+      Öffentlicher Schlüssel (A = g<sup>a</sup> (mod p)), mit dem privaten Schlüssel berechnet:
+      <code class="bignum pub">A = {{A.toString()}}</code>
     </p>
 
     <template v-if="a !== false">
-    
     <h2>
-        <a href="javascript://" :class="{active: showEncrypt}" @click="showEncrypt = true; r = false;">Mitteilung verschlüsseln</a>
-        <a href="javascript://" :class="{active: !showEncrypt}" @click="showEncrypt = false">Mitteilung entschlüsseln</a>
+      <a href="javascript://" :class="{active: showEncrypt}" @click="showEncrypt = true; r = false;">
+        Mitteilung verschlüsseln
+      </a>
+      <a href="javascript://" :class="{active: !showEncrypt}" @click="showEncrypt = false">
+        Mitteilung entschlüsseln
+      </a>
     </h2>
     
     <template v-if="showEncrypt">
-    Mitteilung:<br>
-    <input type="text" v-model="message" :size="bits/8 - 1" :maxlength="bits/8 - 1">
-    {{(bits/8-1) - message.length}} Zeichen übrig
-    <br><br>
-    Mitteilung als Zahl:
-    <code class="bignum">
+      Mitteilung:<br>
+      <input type="text" v-model="message" :size="bits/8 - 1" :maxlength="bits/8 - 1">
+      {{(bits/8-1) - message.length}} Zeichen übrig
+      <br><br>
+      Mitteilung als Zahl:
+      <code class="bignum">
         <template v-if="message !== ''">m = {{messageEncoded.toString()}}</template>
         <template v-else>-</template>
-    </code>
-    <br>
-    <br>
-    Öffentlicher Schlüssel des Empfängers (A):<br>
-    <code>A<sub>Empfänger</sub> = <input type="text" v-model="A_receiver" :size="Math.floor(bits/3.322)"></code>
-    <br><br>
-    <p >
+      </code>
+      <br>
+      <br>
+      Öffentlicher Schlüssel des Empfängers (A):<br>
+      <code>A<sub>Empfänger</sub> =
+      <input type="text" v-model="A_receiver" :size="Math.floor(bits/3.322)"></code>
+      <br><br>
+      <p>
         <button @click="r = genRand()">Neuer temporärer Schlüssel generieren</button>    
         <br><br>
         <template v-if="R !== false">
         Temporärer privater Schlüssel (r), generierte Zufallszahl: 
         <a @click="showPrivR = !showPrivR; false" href="javascript://">{{showPrivR? 'verstecken': 'anzeigen'}}</a>
-        <code class="bignum priv">r = <template v-if="showPrivR">{{a.toString()}}</template><template v-else><i>GEHEIM</i></template></code>
+        <code class="bignum priv">r =
+          <template v-if="showPrivR">{{a.toString()}}</template>
+          <template v-else><i>GEHEIM</i></template>
+        </code>
         <br>
         Temporärer öffentlicher Schlüssel (R = g<sup>r</sup> (mod p)), berechnet:
         <code class="bignum pub">R = {{R.toString()}}</code>
         </template>
-    </p>
-    Verschlüsselte Mitteilung (c = A<sup>r</sup> · m (mod p)):
-    <code class="bignum">
+      </p>
+      Verschlüsselte Mitteilung (c = A<sup>r</sup> · m (mod p)):
+      <code class="bignum">
         c = {{messageEncrypted.toString()}}<br>
-    </code>
+      </code>
     </template>
 
     <template v-else>
-    Temporärer öffentlicher Schlüssel des Senders (R):<br>
-    <code>R<sub>Sender</sub> = <input type="text" v-model="R_sender" :size="Math.floor(bits/3.322)"></code>
-    <br><br>
-    Verschlüsselte Mitteilung:<br>
-    <code>c = <input type="text" v-model="messageToDecrypt" :size="Math.floor(bits/3.322)"></code>
-    <br><br>
-    Entschlüsselte Mitteilung als Zahl (m = R<sub>Sender</sub><sup>p - 1 - a</sup> · c (mod p)):
-    <code class="bignum">m = {{messageDecrypted.toString()}}</code>
-    <br>
-    Entschlüsselte Mitteilung:
-    <code class="bignum">{{messageDecoded}}</code>
+      Temporärer öffentlicher Schlüssel des Senders (R):<br>
+      <code>R<sub>Sender</sub> = <input type="text" v-model="R_sender" :size="Math.floor(bits/3.322)"></code>
+      <br><br>
+      Verschlüsselte Mitteilung:<br>
+      <code>c = <input type="text" v-model="messageToDecrypt" :size="Math.floor(bits/3.322)"></code>
+      <br><br>
+      Entschlüsselte Mitteilung als Zahl (m = R<sub>Sender</sub><sup>p - 1 - a</sup> · c (mod p)):
+      <code class="bignum">m = {{messageDecrypted.toString()}}</code>
+      <br>
+      Entschlüsselte (und decodierte) Mitteilung:
+      <code class="bignum">{{messageDecoded}}</code>
     </template>
     </template>
   </div>
