@@ -25,75 +25,27 @@
     </p>
 
     <template v-if="a !== false">
-    <h2>
-      <a href="javascript://" :class="{active: showEncrypt}" @click="showEncrypt = true; r = false;">
-        Mitteilung verschlüsseln
-      </a>
-      <a href="javascript://" :class="{active: !showEncrypt}" @click="showEncrypt = false">
-        Mitteilung entschlüsseln
-      </a>
-    </h2>
-    
-    <template v-if="showEncrypt">
-      Mitteilung:<br>
-      <input type="text" v-model="message" :size="bits/8 - 1" :maxlength="bits/8 - 1">
-      {{(bits/8-1) - message.length}} Zeichen übrig
-      <br><br>
-      Mitteilung als Zahl:
-      <code class="bignum">
-        <template v-if="message !== ''">m = {{messageEncoded.toString()}}</template>
-        <template v-else>-</template>
-      </code>
-      <br>
-      <br>
-      Öffentlicher Schlüssel des Empfängers (A):<br>
-      <code>A<sub>Empfänger</sub> =
-      <input type="text" v-model="A_receiver" :size="Math.floor(bits/3.322)"></code>
-      <br><br>
-      <p>
-        <button @click="r = genRand()">Neuer temporärer Schlüssel generieren</button>    
-        <br><br>
-        <template v-if="R !== false">
-        Temporärer privater Schlüssel (r), generierte Zufallszahl: 
-        <a @click="showPrivR = !showPrivR; false" href="javascript://">{{showPrivR? 'verstecken': 'anzeigen'}}</a>
-        <code class="bignum priv">r =
-          <template v-if="showPrivR">{{a.toString()}}</template>
-          <template v-else><i>GEHEIM</i></template>
-        </code>
-        <br>
-        Temporärer öffentlicher Schlüssel (R = g<sup>r</sup> (mod p)), berechnet:
-        <code class="bignum pub">R = {{R.toString()}}</code>
-        </template>
-      </p>
-      Verschlüsselte Mitteilung (c = A<sup>r</sup> · m (mod p)):
-      <code class="bignum">
-        c = {{messageEncrypted.toString()}}<br>
-      </code>
-    </template>
-
-    <template v-else>
-      Temporärer öffentlicher Schlüssel des Senders (R):<br>
-      <code>R<sub>Sender</sub> = <input type="text" v-model="R_sender" :size="Math.floor(bits/3.322)"></code>
-      <br><br>
-      Verschlüsselte Mitteilung:<br>
-      <code>c = <input type="text" v-model="messageToDecrypt" :size="Math.floor(bits/3.322)"></code>
-      <br><br>
-      Entschlüsselte Mitteilung als Zahl (m = R<sub>Sender</sub><sup>p - 1 - a</sup> · c (mod p)):
-      <code class="bignum">m = {{messageDecrypted.toString()}}</code>
-      <br>
-      Entschlüsselte (und decodierte) Mitteilung:
-      <code class="bignum">{{messageDecoded}}</code>
-    </template>
+      <h2>
+        <a href="javascript://" :class="{active: showEncrypt}" @click="showEncrypt = true; r = false;">
+          Mitteilung verschlüsseln
+        </a>
+        <a href="javascript://" :class="{active: !showEncrypt}" @click="showEncrypt = false">
+          Mitteilung entschlüsseln
+        </a>
+      </h2>
+      <encrypt v-if="showEncrypt" :p="p" :g="g" :bits="bits"/>
+      <decrypt v-else :p="p" :g="g" :bits="bits" :a="a"/>
     </template>
   </div>
 </template>
 
 <script>
 import bigInt from 'big-integer';
+import Encrypt from './components/Encrypt';
+import Decrypt from './components/Decrypt';
 
 export default {
     name: 'app',
-
     data () {
         return {
             groups: [
@@ -108,113 +60,33 @@ export default {
             a: localStorage.getItem('privateKey') ?
                 bigInt(localStorage.getItem('privateKey')) : false,
             showPrivA: false,
-            r: false,
-            showPrivR: false,
             showEncrypt: true,
-            message: '',
-            A_receiver: '',
-            messageToDecrypt: '',
-            R_sender: '',
         };
     },
-
-    methods: {
-        genRand () {
-            return bigInt.randBetween(this.p.divide(10), this.p);
-        },
-        genKeyPair () {
-            if (this.a === false || confirm('Neues Schlüsselpaar generieren, und altes Schlüsselpaar überschreiben?')) {
-                this.a = this.genRand();
-            }
-        },
-        hexEncode (str) {
-            var hex, i;
-            var result = '';
-            for (i=0; i<str.length; i++) {
-                hex = str.charCodeAt(i).toString(16);
-                result += ('0'+hex).slice(-2);
-            }
-            return result;
-        },
-        hexDecode (str) {
-            var j;
-            var hexes = str.match(/.{1,2}/g) || [];
-            var result = '';
-            for(j = 0; j<hexes.length; j++) {
-                result += String.fromCharCode(parseInt(hexes[j], 16));
-            }
-            return result;
-        },
-    },
-
     computed: {
-        p () {
-            return this.groups[this.selectedGroup].p;
-        },
-        g () {
-            return this.groups[this.selectedGroup].g;
-        },
-        bits () {
-            return this.groups[this.selectedGroup].bits;
-        },
+        p () { return this.groups[this.selectedGroup].p; },
+        g () { return bigInt(this.groups[this.selectedGroup].g); },
+        bits () { return this.groups[this.selectedGroup].bits; },
         A () {
             if (this.a) {
                 return bigInt(this.g).modPow(this.a, this.p);
-            } else {
-                return false;
             }
+            return false;
         },
-        R () {
-            if (this.r) {
-                return bigInt(this.g).modPow(this.r, this.p);
-            } else {
-                return false;
-            }
-        },
-        messageEncoded () {
-            if (this.message !== '') {
-                return bigInt(this.hexEncode(this.message.trim()), 16);
-            }
-            return '';
-        },
-        messageEncrypted () {
-            if (this.messageEncoded !== '' && this.A_receiver !== '' && this.r) {
-                try {
-                    return bigInt(this.A_receiver.trim()).modPow(this.r, this.p)
-                            .multiply(this.messageEncoded).mod(this.p);
-                } catch (error) {
-                    // nothing
-                }
-            }
-            return '-';
-        },
-        messageDecrypted () {
-            if (this.messageToDecrypt !== '' && this.R_sender !== '' && this.a) {
-                try {
-                    var c = bigInt(this.messageToDecrypt.trim());
-                    return bigInt(this.R_sender.trim())
-                            .modPow(this.p.minus(1).minus(this.a), this.p)
-                            .multiply(c).mod(this.p);
-                } catch (error) {
-                    // nothing
-                }
-            }
-            return '-';
-        },
-        messageDecoded () {
-            if (this.messageDecrypted === '-') {
-                return '-';
-            } else {
-                return this.hexDecode(this.messageDecrypted.toString(16));
-            }
-        }
     },
-
-    watch: {
-        a () {
-            localStorage.setItem('privateKey', this.a.toString());
-        }
-    }
+    methods: {
+        genKeyPair () {
+            var confirmText = 'Neues Schlüsselpaar generieren, und altes Schlüsselpaar überschreiben?';
+            if (this.a === false || confirm(confirmText)) {
+                this.a = bigInt.randBetween(this.p.divide(10), this.p);
+                localStorage.setItem('privateKey', this.a.toString());
+            }
+        },
+    },
+    components: {
+        Encrypt,
+        Decrypt,
+    },
 };
 </script>
 
