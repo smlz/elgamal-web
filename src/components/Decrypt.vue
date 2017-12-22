@@ -1,12 +1,19 @@
 <template>
 <div>
     Temporärer öffentlicher Schlüssel des Senders (R):<br>
-    <code>R<sub>Sender</sub> = <input type="text" v-model="R_sender" :size="Math.floor(bits/3.322)"></code>
+    <code>
+      R<sub>Sender</sub> =
+      <input type="text" v-model="R_sender" :size="Math.floor(bits/3.322)">
+    </code>
     <br><br>
     Verschlüsselte Mitteilung:<br>
-    <code>c = <input type="text" v-model="messageToDecrypt" :size="Math.floor(bits/3.322)"></code>
+    <code>
+      c = <input type="text" v-model="messageToDecrypt"
+                :size="Math.floor(bits/3.322)">
+    </code>
     <br><br>
-    Entschlüsselte Mitteilung als Zahl (m = R<sub>Sender</sub><sup>p - 1 - a</sup> · c (mod p)):
+    Entschlüsselte Mitteilung als Zahl
+    (m = R<sub>Sender</sub><sup>p - 1 - a</sup> · c (mod p)):
     <code class="bignum">m = {{messageDecrypted.toString()}}</code>
     <br>
     Entschlüsselte (und decodierte) Mitteilung:
@@ -77,7 +84,3 @@ export default {
     },
 };
 </script>
-
-<style>
-
-</style>

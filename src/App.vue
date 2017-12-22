@@ -14,22 +14,27 @@
     <br>
     <p v-if="a !== false">
       Privater Schlüssel (a), generierte Zufallszahl:
-      <a @click="showPrivA = !showPrivA" href="javascript://">{{showPrivA? 'verstecken': 'anzeigen'}}</a>
+      <a @click="showPrivA = !showPrivA" href="javascript://">
+        {{showPrivA? 'verstecken': 'anzeigen'}}
+      </a>
       <code class="bignum priv">a =
         <template v-if="showPrivA">{{a.toString()}}</template>
         <template v-else><i>GEHEIM</i></template>
       </code>
       <br>
-      Öffentlicher Schlüssel (A = g<sup>a</sup> (mod p)), mit dem privaten Schlüssel berechnet:
+      Öffentlicher Schlüssel (A = g<sup>a</sup> (mod p)), mit dem privaten
+      Schlüssel berechnet:
       <code class="bignum pub">A = {{A.toString()}}</code>
     </p>
 
     <template v-if="a !== false">
       <h2>
-        <a href="javascript://" :class="{active: showEncrypt}" @click="showEncrypt = true">
+        <a href="javascript://" :class="{active: showEncrypt}"
+           @click="showEncrypt = true">
           Mitteilung verschlüsseln
         </a>
-        <a href="javascript://" :class="{active: !showEncrypt}" @click="showEncrypt = false">
+        <a href="javascript://" :class="{active: !showEncrypt}"
+           @click="showEncrypt = false">
           Mitteilung entschlüsseln
         </a>
       </h2>
@@ -109,14 +114,12 @@ h2 a {
     border-top-right-radius: 10px;
     outline: 0;
 }
-
 h2 a:not(.active) {
     background-color: lightgray;
 }
 h2 a.active {
     border-bottom: 3px solid white;
 }
-
 code {
     font-size: 11pt;
     padding: 1px 4px;
