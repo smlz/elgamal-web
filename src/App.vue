@@ -26,7 +26,7 @@
 
     <template v-if="a !== false">
       <h2>
-        <a href="javascript://" :class="{active: showEncrypt}" @click="showEncrypt = true; r = false;">
+        <a href="javascript://" :class="{active: showEncrypt}" @click="showEncrypt = true">
           Mitteilung verschlüsseln
         </a>
         <a href="javascript://" :class="{active: !showEncrypt}" @click="showEncrypt = false">
