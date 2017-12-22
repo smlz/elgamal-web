@@ -6,7 +6,7 @@
       Gruppengrösse ({{this.groups[this.selectedGroup].bits}}-bit):
       <code class="bignum">p = {{p.toString()}}</code>
       <br>
-      Generator: <code>g = {{g}}</code>
+      Generator: <code>g = {{g.toString()}}</code>
     </p>
 
     <h2>Schlüsselpaar generieren</h2>
