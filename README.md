@@ -4,6 +4,8 @@
 
 Exchange simple text messages encrypted with the [ElGamal Encryption Scheme](https://en.wikipedia.org/wiki/ElGamal_encryption). The private key is permanently stored in the browser local storage.
 
+**Demo:** http://elgamal.smlz.ch/
+
 ## Build Setup
 
 ``` bash
